@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import styles from './Goal.module.css';
 /* import {ReactComponent as IconRun} from '../../img/icon-run.svg'; */
 
@@ -12,10 +13,10 @@ import styles from './Goal.module.css';
     "completed":"100"
 }; */
 
-function Goal({icon, events,period,details,goal,completed}) {
+function Goal({id,icon, events,period,details,goal,completed}) {
     /* const {icon, events,period,details,goal,completed} =goalMock; */
     return ( 
-        <div className={styles.goal + " card"}>
+        <Link to={`/list/${id}`} className={styles.goal + " card"}>
             <div className='flex items-center'>
                 <div className={styles.icon}>
                    {icon}
@@ -40,7 +41,7 @@ function Goal({icon, events,period,details,goal,completed}) {
                 </div>
                 <button className='btn btn--gray'>Completed</button>
             </div>
-        </div>
+        </Link>
         
     );
 }

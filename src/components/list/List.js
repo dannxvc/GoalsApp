@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import { Outlet } from "react-router-dom";
 import { Context } from "../../services/Storage";
 import Goal from "./Goal";
 
@@ -11,7 +12,10 @@ function List() {
    return ( 
         //renderizar the goals
         //listMock.map(goal =><Goal key={goal.id}{...goal}></Goal>)
-        state.order.map(id =><Goal key={id}{...state.objects[id]}></Goal>)
+        <>
+            {state.order.map(id =><Goal key={id}{...state.objects[id]}></Goal>)}
+            <Outlet/>
+        </>
     );
 }
 
