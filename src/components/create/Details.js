@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,useContext } from "react";
+import { Context } from "../../services/Storage";
 import styles from "./Details.module.css";
+import {useNavigate} from 'react-router';
 function Details() {
     //hooks
     const [form,setForm]=useState({
@@ -11,6 +13,8 @@ function Details() {
         term:"2030-01-01",
         completed:50
     });
+    const [state, dispach] = useContext(Context);
+    
     //extraer cada uno de los elementos del estado
     const {details,events,period,icon,goal,term,completed}=form;
     //create onChange function
@@ -24,10 +28,13 @@ function Details() {
     useEffect(()=>{
        // console.log(form);
     },[form]);
+    const browse = useNavigate();
 
     //creamos la funcion crear
     const create = async() => {    
-        console.log(form);
+       // console.log(form);\
+       dispach({type:'create', goal: form});
+       browse('/list');
     }
     const frequencyOptions=["day", "week", "month", "year"];
     const iconOptions=["🏃‍♀️","📖","💻","💵","✈️"];
