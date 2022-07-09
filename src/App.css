@@ -10,6 +10,9 @@
 .btn--gray{
   @apply nm-flat-neutral-100 hover:bg-gray-200;
 }
+.btn--red{
+  @apply text-red-700 nm-flat-white border border-red-700 hover:bg-red-600 hover:text-white;
+}
 .label{
   @apply block uppercase text-xs font-bold mb-6;
 }

@@ -1,17 +1,20 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import { Context } from "../../services/Storage";
+import { requestGoals } from "../../services/Request";
 import Goal from "./Goal";
 
 function List() {
-    //hook useContext
-    //const test = useContext(Context);
-   // console.log(test);
+
     const [state, dispach] = useContext(Context);
+    useEffect(() => {
+        (async()=>{
+            const goals = await requestGoals();
+            dispach({type: 'add', goals});
+        })();
+    },[]);
     
    return ( 
-        //renderizar the goals
-        //listMock.map(goal =><Goal key={goal.id}{...goal}></Goal>)
         <>
             {state.order.map(id =><Goal key={id}{...state.objects[id]}></Goal>)}
             <Outlet/>

@@ -1,25 +1,14 @@
 import { createContext, useReducer } from "react";
-const listMock =[{
-    "id":"1",
-    "details":"Correr por 30 minutos",
-    "period":"day",
-    "events":1,
-    "icon":"✈️",
-    "goal":365,
-    "term":"2030-01-01",
-    "completed":"100"
-},
-{
-    "id":"2",
-    "details":"Leer libros",
-    "period":"year",
-    "events":6,
-    "icon":"📖",
-    "goal":60,
-    "term":"2030-01-01",
-    "completed":"50"
-}];
-const inicialState ={
+
+// const memory = localStorage.getItem('goals');
+// const inicialState = memory
+//     ? JSON.parse(memory)
+//     : {
+//         order: [],
+//         objects:{}
+//     };
+
+const inicialState = {
     order: [],
     objects:{}
 };
@@ -31,29 +20,55 @@ function reductor(state, action){
                 order: goals.map(goal => goal.id),
                 objects: goals.reduce((object, goal) => ({...object, [goal.id]: goal}),{})
             };
+          //  localStorage.setItem('goals',JSON.stringify(newState));
+      //    console.log(newState);
             return newState;
         };
         case 'create':{
-            const id= Math.random();
+            const id= String(Math.random());
             //const id = action.goal.id;
             const newState = {
                 order:[...state.order, id],
                 objects:{
                     ...state.objects,
-                    [id]:action.goal
+                    [id]: action.goal
                 }
             };
+         //   localStorage.setItem('goals',JSON.stringify(newState));
             return newState;
         };
+        case 'update':{
+            const id = action.goal.id;
+            state.objects[id] = {
+                    ...state.objects[id],
+                    ...action.goal
+            };
+            const newState = {...state};
+         //   localStorage.setItem('goals',JSON.stringify(newState));
+            return newState;
+        };
+        case 'deletegoal':{
+            const id = action.id;
+            const newOrder = state.order.filter(item => item!==id);
+            delete state.objects[id];
+            const newState = {
+                order: newOrder,
+                objects: state.objects
+            };
+           // localStorage.setItem('goals',JSON.stringify(newState));
+            return newState;
+        };
+        default:
+            throw new Error();
     }
 };
 
-const goals = reductor(inicialState, {type: 'add', goals: listMock});
+//reductor(inicialState, {type: 'add', goals: listMock});
 export const Context = createContext(null);
 //component to envolve the app, and give it this context
 function Storage({children}) {
     //hook useReduces
-    const[state, dispach] = useReducer(reductor ,goals);
+    const[state, dispach] = useReducer(reductor ,inicialState);
     return (
         //to use the context i have to use Context as a component
         //value, attribute to share w all our components

@@ -1,41 +1,53 @@
-import { useEffect, useState,useContext } from "react";
+import { useEffect, useState, useContext } from "react";
+import {useNavigate, useParams} from 'react-router';
 import { Context } from "../../services/Storage";
 import styles from "./Details.module.css";
-import {useNavigate} from 'react-router';
+
 function Details() {
-    //hooks
+    const {id} =useParams();
+
     const [form,setForm]=useState({
         details:'',
-        events:'',
-        period:'',
+        events:1,
+        period:'day',
         icon:"✈️",
         goal:60,
         term:"2030-01-01",
         completed:50
     });
-    const [state, dispach] = useContext(Context);
-    
-    //extraer cada uno de los elementos del estado
-    const {details,events,period,icon,goal,term,completed}=form;
-    //create onChange function
-    const onChange = (event, prop)=>{
-        setForm(estate =>({...estate, [prop]:event.target.value}));
-        //es asincrona, es decir cuando estamos imprimiendo esto, el estado no c
-        //ha cambiado aun
-        //console.log(form);
-    }
-    //para ver el cambio usamos useEffect
-    useEffect(()=>{
-       // console.log(form);
-    },[form]);
-    const browse = useNavigate();
 
-    //creamos la funcion crear
-    const create = async() => {    
-       // console.log(form);\
+    const [state, dispach] = useContext(Context);
+    const {details,events,period,icon,goal,term,completed}=form;
+    const onChange = (event, prop)=>{
+        setForm(state =>({...state, [prop]:event.target.value}));
+    }
+    const browse = useNavigate();
+    const goalStorage = state.objects[id];
+    
+    useEffect(()=>{
+        if(!id) return;
+        if(!goalStorage){
+            return browse('/list');
+        } 
+        setForm(goalStorage);
+    },[id,goalStorage,browse]);
+    
+    const create = async () => {    
        dispach({type:'create', goal: form});
        browse('/list');
     }
+    const update = () => {    
+        dispach({type:'update', goal: form});
+        browse('/list');
+     }
+
+     const deletegoal = () => {    
+        dispach({type:'deletegoal', id});
+        browse('/list');
+     }
+    const cancel = () => {    
+        browse('/list');
+     }
     const frequencyOptions=["day", "week", "month", "year"];
     const iconOptions=["🏃‍♀️","📖","💻","💵","✈️"];
     return (
@@ -44,7 +56,7 @@ function Details() {
                 <label className="label">
                     Describe your goal
                     <input 
-                        class="input" 
+                        className="input" 
                         placeholder="ej. 52 caminatas" 
                         type="text"
                         value={details}
@@ -56,21 +68,21 @@ function Details() {
                     How often you want to meet your goal? <span>(ej. once a week)</span>
                     <div className="flex mb-6">
                         <input
-                            class="input" 
+                            className="input" 
                             type="number" 
                             placeholder="ej. 52 caminatas"
                             value={events}
                             onChange={e=>onChange(e,'events')}
                         />
-                        <select class="input ml-6" value={period} onChange={e=>onChange(e,'period')}>
-                            {frequencyOptions.map(option => <option value={option}>{option}</option>)}
+                        <select className="input ml-6" value={period} onChange={e=>onChange(e,'period')}>
+                            {frequencyOptions.map(option => <option key={option} value={option}>{option}</option>)}
                         </select>
                     </div>
                 </label>
                 <label className="label">
                     How many times do you want to complete this goal?
                     <input 
-                        class="input" 
+                        className="input" 
                         type="number"
                         value={goal}
                         onChange={e=>onChange(e,'goal')}
@@ -79,7 +91,7 @@ function Details() {
                 <label className="label">
                     Do you have a deadline?
                     <input 
-                        class="input" 
+                        className="input" 
                         type="date"
                         value={term}
                         onChange={e=>onChange(e,'term')}
@@ -88,7 +100,7 @@ function Details() {
                 <label className="label">
                     How many times have you already completed this goal?
                     <input 
-                        class="input" 
+                        className="input" 
                         type="number"
                         value={completed}
                         onChange={e=>onChange(e,'completed')}
@@ -96,14 +108,28 @@ function Details() {
                 </label>
                 <label className="label">
                     Choose an icon for this goal.
-                    <select class="input" value={icon} onChange={e=>onChange(e,'icon')}>
-                       {iconOptions.map(option => <option value={option}>{option}</option>)}
+                    <select className="input" value={icon} onChange={e=>onChange(e,'icon')}>
+                       {iconOptions.map(option => <option key={option} value={option}>{option}</option>)}
                     </select>
                 </label>
             </form>
             <div className={styles.btns}>
-                <button className="btn btn--black" onClick={create} >Create</button>
-                <button className="btn btn--gray">Cancel</button>
+                {!id && <button 
+                    className="btn btn--black" 
+                    onClick={create}
+                >Create</button>}
+                {id && <button 
+                    className="btn btn--black" 
+                    onClick={update}
+                >Update</button>}
+                {id && <button 
+                    className="btn btn--red" 
+                    onClick={deletegoal}
+                >Delete</button>}
+                <button 
+                    className="btn btn--gray" 
+                    onClick={cancel}
+                >Cancel</button>
             </div>
         </div>
     );
