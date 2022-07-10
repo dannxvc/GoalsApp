@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import {useNavigate, useParams} from 'react-router';
+import { createGoal, deleteGoal, updateGoal } from "../../services/Request";
 import { Context } from "../../services/Storage";
 import styles from "./Details.module.css";
 
@@ -33,16 +34,19 @@ function Details() {
     },[id,goalStorage,browse]);
     
     const create = async () => {    
-       dispach({type:'create', goal: form});
+       const newGoal = await createGoal();
+       dispach({type:'create', goal: newGoal});
        browse('/list');
     }
-    const update = () => {    
-        dispach({type:'update', goal: form});
+    const update = async () => {    
+        const updatedGoal = await updateGoal();
+        dispach({type:'update', goal: updatedGoal});
         browse('/list');
      }
 
-     const deletegoal = () => {    
-        dispach({type:'deletegoal', id});
+     const deletegoal = async () => { 
+        const deletedId = await deleteGoal();  
+        dispach({type:'deletegoal', id: deletedId});
         browse('/list');
      }
     const cancel = () => {    

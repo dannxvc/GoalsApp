@@ -5,7 +5,20 @@ import List from './components/list/List';
 import Details from './components/create/Details';
 import NotFound from './components/shared/NotFound';
 import Modal from './components/shared/Modal';
+import { useContext, useEffect } from 'react';
+import { requestGoals } from './services/Request';
+import { Context } from './services/Storage';
 function App() {
+
+  const [,dispach] = useContext(Context);
+
+  useEffect(() => {
+    (async()=>{
+        const goals = await requestGoals();
+        dispach({type: 'add', goals});
+    })();
+  },[]);
+
   return (
     <Routes>
       <Route path="/" element={<Layout/>}>

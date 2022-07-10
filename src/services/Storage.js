@@ -25,8 +25,8 @@ function reductor(state, action){
             return newState;
         };
         case 'create':{
-            const id= String(Math.random());
-            //const id = action.goal.id;
+            //const id= String(Math.random());
+            const id = action.goal.id;
             const newState = {
                 order:[...state.order, id],
                 objects:{
