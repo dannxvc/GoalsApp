@@ -31,7 +31,7 @@ function reductor(state, action){
                 order:[...state.order, id],
                 objects:{
                     ...state.objects,
-                    [id]: action.goal
+                    [id]: {id, ...action.goal}
                 }
             };
          //   localStorage.setItem('goals',JSON.stringify(newState));
